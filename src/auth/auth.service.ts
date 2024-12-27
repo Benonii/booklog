@@ -3,11 +3,15 @@ import { PrismaService } from '../prisma/prisma.service';
 import * as bcrypt from 'bcrypt';
 import { SignupDto } from './dto/signup.dto';
 import { LoginDto } from './dto/login.dto';
+import { JwtService } from '@nestjs/jwt';
 
 
 @Injectable()
 export class AuthService {
-    constructor(private prisma: PrismaService) {}
+    constructor(
+        private prisma: PrismaService,
+        private readonly jwtService: JwtService,
+        ) {}
 
     async signup(data: SignupDto) {
         const { full_name, username, email, password } = data;
@@ -35,11 +39,11 @@ export class AuthService {
     };
 
     async login(data: LoginDto) {
-        const { login, password } = data;
+        const { email_or_username, password } = data;
 
         const user = await this.prisma.user.findFirst({
             where: {
-                OR: [{ email: login}, { username: login }],
+                OR: [{ email: email_or_username}, { username: email_or_username }],
             },
         });
 
@@ -52,7 +56,16 @@ export class AuthService {
             throw new HttpException('Invalid email password combination', HttpStatus.UNAUTHORIZED);
         }
 
-        const { password: _, ...safeUser } = user; 
-        return safeUser;
+        return {
+            message: "Login successful!",
+            data: this.generateToken(user.id, user.email, user.full_name)
+        }
+    }
+
+    private generateToken(user_id: number, email: string, full_name: string) {
+        const payload = { id: user_id, email, full_name };
+        return {
+            accessToken: this.jwtService.signAsync(payload),
+        }
     }
 }
