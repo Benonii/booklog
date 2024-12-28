@@ -56,7 +56,7 @@ export class AuthService {
             throw new HttpException('Invalid email password combination', HttpStatus.UNAUTHORIZED);
         }
 
-        const accessToken = await this.generateToken(user.id, user.email, user.full_name);
+        const accessToken = await this.generateToken(user.id, user.email, user.full_name, user.username);
 
         return {
             message: "Login successful!",
@@ -64,8 +64,8 @@ export class AuthService {
         }
     }
 
-    private async generateToken(user_id: number, email: string, full_name: string) {
-        const payload = { id: user_id, email, full_name };
+    private async generateToken(user_id: number, email: string, full_name: string, username: string) {
+        const payload = { id: user_id, email, full_name, username };
         return {
             accessToken: await this.jwtService.signAsync(payload),
         }
