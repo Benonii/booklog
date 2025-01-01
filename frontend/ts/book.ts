@@ -10,10 +10,74 @@ type Book = {
 
 document.addEventListener('DOMContentLoaded', function () {
     const library = document.getElementById('library');
-    console.log(library); // should no longer be null
+    const lastReadCtr = document.getElementById('lastReadCtr')
+
+    async function getLastReadBook() {
+        const response = await fetch(`http://localhost:3000/api/book/last-read`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`
+            },
+        })
+
+        const responseJSON = await response.json();
+        if (!response.ok) {
+            alert(`Error: ${responseJSON.message}. Status: ${response.status}`);
+        } 
+
+        return responseJSON.data;
+    }
 
     // Render the books
     async function renderBooks() {
+        const book = await getLastReadBook();
+
+        if (book) {
+            const lastReadBook = document.createElement('div');
+            lastReadBook.innerHTML = `
+                <div class="d-flex flex-column align-items-stretch bg-white p-3 rounded shadow" style="height: 100%;">
+                    <!-- Delete Button -->
+                    <a 
+                        tabindex="0" 
+                        class="btn btn-lg align-self-end" 
+                        role="button" 
+                        data-bs-toggle="modal" 
+                        data-bs-target="#deleteModal"
+                        data-id=${book.id}
+                    >
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="delete-btn" viewBox="0 0 16 16">
+                            <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z"/>
+                            <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z"/>
+                        </svg>
+                    </a>
+                    <!-- Book Details -->
+                    <div class="d-flex align-items-center flex-grow-1">
+                        <img src="./assets/images/default-book.png" alt="Book Cover" class="me-3" width="140">
+                        <div>
+                            <h5 class="mb-1">${book?.title}</h5>
+                            <p><strong>Genre:</strong>${book?.genre}</p>
+                            <p>278 pages</p>
+                            <p class="text-secondary mb-2">by ${book?.author}</p>
+                            <div class="progress" style="height: 8px; width: 150px;">
+                                <div class="progress-bar" role="progressbar" style="width: ${(book.progress / book.pages) * 100}%;"
+                                    aria-valuenow="${(book.progress / book.pages) * 100}" aria-valuemin="0" aria-valuemax="100">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Update Button aligned to the right -->
+                    <button 
+                        class="btn btn-primary btn-lg primary-btn mt-4 ms-auto update-btn"
+                        data-bs-toggle="modal" data-bs-target="#editBookModal" data-book-id="${book.id}"
+                        style="width: auto;"
+                    >
+                        Update
+                    </button>
+                </div>
+            `
+            lastReadCtr?.appendChild(lastReadBook);
+        }
+
         const books = await fetchBooks();
         const emptyLibrary = document.createElement('p');
         emptyLibrary.className = 'text-center mt-2';
@@ -34,7 +98,8 @@ document.addEventListener('DOMContentLoaded', function () {
                                     role="button" 
                                     data-bs-toggle="modal" 
                                     data-bs-target="#deleteModal"
-                                    data-id=${book.id}>
+                                    data-id=${book.id}
+                                >
                                     <svg 
                                         xmlns="http://www.w3.org/2000/svg" 
                                         width="25" 
@@ -71,6 +136,7 @@ document.addEventListener('DOMContentLoaded', function () {
             console.log('Library is empty')
             console.log('Library:', library)
             library?.appendChild(emptyLibrary);
+            lastReadCtr?.appendChild(emptyLibrary)
         }
     }
 
@@ -78,6 +144,7 @@ document.addEventListener('DOMContentLoaded', function () {
     renderBooks();
     
     document.getElementById('addBookModal')?.addEventListener('show.bs.modal', function (e: Event) {
+        console.log("Modal is open")
         async function createBook(newBook: Omit<Book, 'id'>): Promise<void> {
             const response = await fetch('http://localhost:3000/api/book', {
                 method: 'POST',
@@ -99,7 +166,7 @@ document.addEventListener('DOMContentLoaded', function () {
             await renderBooks();
         }
     
-        document.getElementById('addBookForm')?.addEventListener('submit', async function (e: Event) {
+        document.getElementById('saveBookBtn')?.addEventListener('click', async function (e: Event) {
             e.preventDefault();
         
             const title = (document.getElementById('title') as HTMLInputElement).value;
@@ -223,19 +290,17 @@ document.addEventListener('DOMContentLoaded', function () {
         e.preventDefault()
         if (e.target?.classList.contains('update-btn')) {
             const bookID = e?.target.getAttribute('data-book-id')
-            console.log("Book ID:", bookID);
+            // console.log("Book ID:", bookID);
             populateEditModal(bookID);
         }
     })
 
     // Listen for a book being deleted
     document.getElementById('deleteModal')?.addEventListener('show.bs.modal', function(e) {
-        console.log("I know this bitch open");
         const button = (e as any).relatedTarget as HTMLElement;
         const bookID = button.getAttribute('data-id');
 
         const confirmDeleteButton = document.getElementById('confirmDelete');
-        console.log("The button is found!", confirmDeleteButton)
         confirmDeleteButton!.addEventListener('click', async function () {
             if (bookID!) {
                 // Send a request to delete the book
