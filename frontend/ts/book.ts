@@ -22,6 +22,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
         const responseJSON = await response.json();
         if (!response.ok) {
+            if (response.status === 401 || response.status === 403) {
+                redirectToLogin();
+            }
             alert(`Error: ${responseJSON.message}. Status: ${response.status}`);
         } 
 
