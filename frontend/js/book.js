@@ -9,6 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 document.addEventListener('DOMContentLoaded', function () {
+    var _a, _b;
     const library = document.getElementById('library');
     console.log(library); // should no longer be null
     // Render the books
@@ -20,30 +21,34 @@ document.addEventListener('DOMContentLoaded', function () {
             emptyLibrary.innerHTML = 'There is nothing in your Library. <strong>Add a new book!</strong>';
             books.forEach((book) => {
                 const bookCard = document.createElement('div');
-                bookCard.className = 'col-md-4 col-lg-3 mb-4';
+                bookCard.className = 'col-sm-6 col-md-4 col-lg-3 mb-5';
                 bookCard.innerHTML = `
                 <div class="card shadow">
-                    <img src="./assets/images/default-book.png" class="card-img-top" alt="Book">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <h5 class="card-title">${book.title}</h5>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="align-self-center delete-btn mt-2 me-2" viewBox="0 0 16 16">
-                              <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z"/>
-                              <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z"/>
-                            </svg>
-                        </div>
+                    <img src="./assets/images/default-book.png" class="card-img-top" alt="Book" wi>
+                    <div class="card-body d-flex flex-column justify-content-between">
+                        <div>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h5 class="card-title">${book.title}</h5>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="align-self-center delete-btn mt-2 me-2" viewBox="0 0 16 16">
+                                  <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z"/>
+                                  <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z"/>
+                                </svg>
+                            </div>
                             <p class="card-text"><strong>Genre:</strong> ${book.genre}</p>
                             <p class="card-text">Pages: ${book.pages}</p>
-                            <div>
-                                <p class="text-secondary">By ${book.author}</p>
-                                <div class="progress" style="height: 8px; width: 150px;">
-                                    <div class="progress-bar" role="progressbar" style="width: ${(book.progress / book.pages) * 100}%; aria-valuenow=${(book.progress / book.pages) * 100} aria-valuemin="0" aria-valuemax="100"></div>
-                                </div>
-                                <div class="d-flex justify-content-end mt-3">
-                                    <button class="btn btn-primary primary-btn btn-md" data-bs-toggle="modal" data-bs-target="#editBookModal">Update</button>
+                            <p class="text-secondary">By ${book.author}</p>
+                        </div>
+                        <div>
+                            <div class="progress mb-3" style="height: 8px; width: 100%;">
+                                <div class="progress-bar" role="progressbar" style="width: ${(book.progress / book.pages) * 100}%;"
+                                    aria-valuenow="${(book.progress / book.pages) * 100}" aria-valuemin="0" aria-valuemax="100">
                                 </div>
                             </div>
+                            <div class="d-flex justify-content-end">
+                                <button class="btn btn-primary primary-btn btn-md update-btn" data-bs-toggle="modal" data-bs-target="#editBookModal" data-book-id="${book.id}">Update</button>
+                            </div>
                         </div>
+                    </div>
                 </div>
             `;
                 library === null || library === void 0 ? void 0 : library.appendChild(bookCard);
@@ -53,31 +58,139 @@ document.addEventListener('DOMContentLoaded', function () {
                 console.log('Library:', library);
                 library === null || library === void 0 ? void 0 : library.appendChild(emptyLibrary);
             }
-            // document.querySelectorAll('.edit-btn').forEach((button) => {
-            //     button.addEventListener('click', () => {
-            //         const bookId = Number((button as HTMLButtonElement).getAttribute('data-id'));
-            //         openEditModal(bookId);
-            //     });
-            // });
-            // document.querySelectorAll('.delete-btn').forEach((button) => {
-            //     button.addEventListener('click', () => {
-            //         const bookId = Number((button as HTMLButtonElement).getAttribute('data-id'));
-            //         deleteBook(bookId);
-            //     });
-            // });
         });
     }
     // Initial render
     renderBooks();
+    (_a = document.getElementById('addBookModal')) === null || _a === void 0 ? void 0 : _a.addEventListener('show.bs.modal', function (e) {
+        var _a;
+        function createBook(newBook) {
+            return __awaiter(this, void 0, void 0, function* () {
+                const response = yield fetch('http://localhost:3000/api/book', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`,
+                    },
+                    body: JSON.stringify(newBook),
+                });
+                const responseJSON = yield response.json();
+                if (!response.ok) {
+                    alert(`${responseJSON.message}. Status : ${response.status}`);
+                    console.log(responseJSON);
+                }
+                alert(responseJSON.message);
+                console.log("Book created successfully:", responseJSON === null || responseJSON === void 0 ? void 0 : responseJSON.book);
+                yield renderBooks();
+            });
+        }
+        (_a = document.getElementById('addBookForm')) === null || _a === void 0 ? void 0 : _a.addEventListener('submit', function (e) {
+            return __awaiter(this, void 0, void 0, function* () {
+                e.preventDefault();
+                const title = document.getElementById('title').value;
+                const description = document.getElementById('description').value;
+                const author = document.getElementById('author').value;
+                const pages = document.getElementById('pages').value;
+                const progress = document.getElementById('progress').value;
+                const genre = document.getElementById('genre').value;
+                const newBook = {
+                    title,
+                    description,
+                    author,
+                    genre,
+                    pages: Number(pages),
+                    progress: Number(progress),
+                };
+                yield createBook(newBook);
+            });
+        });
+    });
+    (_b = document.getElementById('editBookModal')) === null || _b === void 0 ? void 0 : _b.addEventListener('show.bs.modal', function (e) {
+        var _a;
+        console.log("Modal is open");
+        (_a = document.getElementById('saveChangesBtn')) === null || _a === void 0 ? void 0 : _a.addEventListener('click', function (e) {
+            return __awaiter(this, void 0, void 0, function* () {
+                var _a, _b, _c, _d, _e;
+                e.preventDefault();
+                const book_id = document.getElementById('edit-book-id').value;
+                const title = (_a = document.getElementById('edit-title')) === null || _a === void 0 ? void 0 : _a.value;
+                const description = (_b = document.getElementById('edit-description')) === null || _b === void 0 ? void 0 : _b.value;
+                const author = document.getElementById('edit-author').value;
+                const pages = (_c = document.getElementById('edit-pages')) === null || _c === void 0 ? void 0 : _c.value;
+                const progress = (_d = document.getElementById('edit-progress')) === null || _d === void 0 ? void 0 : _d.value;
+                const genre = (_e = document.getElementById('edit-genre')) === null || _e === void 0 ? void 0 : _e.value;
+                const bookEdit = {
+                    title,
+                    description,
+                    author,
+                    pages: Number(pages),
+                    progress: Number(progress),
+                    genre,
+                };
+                console.log("Updated book:", bookEdit);
+                yield updateBook(book_id, bookEdit);
+            });
+        });
+    });
+    function getBookByID(bookID) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const response = yield fetch(`http://localhost:3000/api/book/${bookID}`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                },
+            });
+            const responseJSON = yield response.json();
+            if (!response.ok) {
+                alert(`Error: ${responseJSON.message}. Status: ${response.status}`);
+            }
+            return responseJSON.data;
+        });
+    }
+    ;
+    function populateEditModal(bookID) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const book = yield getBookByID(Number(bookID));
+            // Populate the input fields
+            document.getElementById('edit-title').value = book === null || book === void 0 ? void 0 : book.title;
+            document.getElementById('edit-genre').value = book === null || book === void 0 ? void 0 : book.genre;
+            document.getElementById('edit-pages').value = book === null || book === void 0 ? void 0 : book.pages.toString();
+            document.getElementById('edit-author').value = book === null || book === void 0 ? void 0 : book.author;
+            document.getElementById('edit-progress').value = book === null || book === void 0 ? void 0 : book.progress.toString();
+            // Store bookID in a hidden input for later use
+            document.getElementById('edit-book-id').value = bookID.toString();
+        });
+    }
+    function updateBook(bookID, bookEdit) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const book_id = Number(bookID);
+            const response = yield fetch(`http://localhost:3000/api/book/${book_id}`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
+                },
+                body: JSON.stringify(bookEdit),
+            });
+            const responseJSON = yield response.json();
+            if (!response.ok) {
+                throw new Error(responseJSON.message || "An error occured!");
+            }
+            console.log("Book updated successfully!");
+            alert("Book updated successfully");
+        });
+    }
+    // Listen for a book being updated
+    document.addEventListener('click', function (e) {
+        var _a;
+        e.preventDefault();
+        if ((_a = e.target) === null || _a === void 0 ? void 0 : _a.classList.contains('update-btn')) {
+            const bookID = e === null || e === void 0 ? void 0 : e.target.getAttribute('data-book-id');
+            console.log("Book ID:", bookID);
+            populateEditModal(bookID);
+        }
+    });
 });
-// const modalElement = document.getElementById('edit-modal');
-// if (!library || !modalElement) {
-//     if (!library) {
-//         throw new Error("Library DOM element not found.");
-//     }
-//     throw new Error("Required DOM elements not found.");
-// }
-// const editModal = new Modal(modalElement);
 let currentBookId = null;
 // Fetch books from the API
 function fetchBooks() {
@@ -103,20 +216,6 @@ function fetchBooks() {
         }
     });
 }
-// Open edit modal with book data
-// async function openEditModal(bookId: number) {
-//     const book = await fetchBookById(bookId);
-//     if (book) {
-//         currentBookId = book.id;
-//         (document.getElementById('edit-title') as HTMLInputElement).value = book.title;
-//         (document.getElementById('edit-genre') as HTMLInputElement).value = book.genre;
-//         (document.getElementById('edit-pages') as HTMLInputElement).value = String(book.pages);
-//         (document.getElementById('edit-progress') as HTMLInputElement).value = String(book.progress);
-//         (document.getElementById('edit-author') as HTMLInputElement).value = book.author;
-//         // editModal.show();
-//     }
-// }
-// Fetch a specific book by ID
 function fetchBookById(bookId) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -133,45 +232,3 @@ function fetchBookById(bookId) {
         }
     });
 }
-// Save changes to a book
-// document.getElementById('save-changes')!.addEventListener('click', async () => {
-//     if (currentBookId === null) return;
-//     const book = {
-//         id: currentBookId,
-//         title: (document.getElementById('edit-title') as HTMLInputElement).value,
-//         genre: (document.getElementById('edit-genre') as HTMLInputElement).value,
-//         pages: Number((document.getElementById('edit-pages') as HTMLInputElement).value),
-//         progress: Number((document.getElementById('edit-progress') as HTMLInputElement).value),
-//         author: (document.getElementById('edit-author') as HTMLInputElement).value,
-//     };
-//     try {
-//         const response = await fetch(`http://localhost:3000/api/books/${currentBookId}`, {
-//             method: 'PUT',
-//             headers: {
-//                 'Content-Type': 'application/json',
-//             },
-//             body: JSON.stringify(book),
-//         });
-//         if (!response.ok) {
-//             throw new Error('Failed to save book');
-//         }
-//         renderBooks(); // Re-render after saving changes
-//         // editModal.hide();
-//     } catch (error) {
-//         console.error('Error saving book:', error);
-//     }
-// });
-// Delete a book
-// async function deleteBook(bookId: number) {
-//     try {
-//         const response = await fetch(`http://localhost:3000/api/books/${bookId}`, {
-//             method: 'DELETE',
-//         });
-//         if (!response.ok) {
-//             throw new Error('Failed to delete book');
-//         }
-//         renderBooks(); // Re-render after deleting
-//     } catch (error) {
-//         console.error('Error deleting book:', error);
-//     }
-// }

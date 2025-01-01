@@ -97,7 +97,7 @@
                     <p>278 pages</p>
                     <p class="text-secondary mb-2">by Allison</p>
                     <div class="progress" style="height: 8px; width: 150px;">
-                        <div class="progress-bar" role="progressbar" style="width: 80%;" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100"></div>
+                        <div class="progress-bar" role="progressbar" style="width: 80%;" aria-valuenow="80" aria-valuemin="0"></div>
                     </div>
                 </div>
             </div>
@@ -136,35 +136,37 @@
           <div class="modal-body">
             <!-- Edit Book Form -->
             <form id="editBookForm">
+              <input type="hidden" id="edit-book-id" name="bookId">
               <div class="mb-3">
-                <label for="bookTitle" class="form-label">Title</label>
-                <input type="text" class="form-control" id="bookTitle" value="The Wedding People">
+                <label for="edit-title" class="form-label">Title</label>
+                <input type="text" class="form-control" id="edit-title">
               </div>
               <div class="mb-3">
-                <label for="bookDescription" class="form-label">Description</label>
-                <textarea class="form-control" id="bookDescription" rows="3">Enter the book description here...</textarea>
+                <label for="edit-description" class="form-label">Description</label>
+                <textarea class="form-control" id="edit-description" rows="3" placeholder="Enter the book description here..."></textarea>
               </div>
               <div class="mb-3">
-                <label for="bookGenre" class="form-label">Genre</label>
-                <input type="text" class="form-control" id="bookGenre" value="Fiction">
+                <label for="edit-genre" class="form-label">Genre</label>
+                <input type="text" class="form-control" id="edit-genre">
               </div>
               <div class="mb-3">
-                <label for="bookPages" class="form-label">Pages</label>
-                <input type="number" class="form-control" id="bookPages" value="278">
+                <label for="edit-pages" class="form-label">Pages</label>
+                <input type="number" class="form-control" id="edit-pages">
               </div>
               <div class="mb-3">
-                <label for="bookProgress" class="form-label">Progress (%)</label>
-                <input type="number" class="form-control" id="bookProgress" value="80" min="0" max="100">
+                <label for="edit-progress" class="form-label">Progress (in pages)</label>
+                <input type="number" class="form-control" id="edit-progress" min="0">
               </div>
               <div class="mb-3">
-                <label for="bookAuthor" class="form-label">Author</label>
-                <input type="text" class="form-control" id="bookAuthor" value="Allison">
+                <label for="edit-author" class="form-label">Author</label>
+                <input type="text" class="form-control" id="edit-author">
+              </div>
+
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="submit" class="btn btn-primary primary-btn" id="saveChangesBtn">Save Changes</button>
               </div>
             </form>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-            <button type="button" class="btn btn-primary primary-btn" onclick="saveChanges()">Save Changes</button>
           </div>
         </div>
       </div>
@@ -182,30 +184,34 @@
                   <!-- Form for book details -->
                   <form id="addBookForm">
                       <div class="mb-3">
-                          <label for="bookTitle" class="form-label">Title</label>
-                          <input type="text" class="form-control" id="bookTitle" placeholder="Enter book title" required>
+                          <label for="tilte" class="form-label">Title</label>
+                          <input type="text" class="form-control" id="title" placeholder="Enter book title" required>
                       </div>
                       <div class="mb-3">
-                          <label for="bookDescription" class="form-label">Description</label>
-                          <textarea class="form-control" id="bookDescription" rows="3" placeholder="Enter book description" required></textarea>
+                          <label for="description" class="form-label">Description</label>
+                          <textarea class="form-control" id="description" rows="3" placeholder="Enter book description" required></textarea>
                       </div>
                       <div class="mb-3">
-                          <label for="bookAuthor" class="form-label">Author</label>
-                          <input type="text" class="form-control" id="bookAuthor" placeholder="Enter author's name" required>
+                        <label for="genre" class="form-label">Genre</label>
+                        <textarea class="form-control" id="genre" rows="3" placeholder="Enter book description" required></textarea>
+                    </div>
+                      <div class="mb-3">
+                          <label for="author" class="form-label">Author</label>
+                          <input type="text" class="form-control" id="author" placeholder="Enter author's name" required>
                       </div>
                       <div class="mb-3">
-                          <label for="bookPages" class="form-label">Pages</label>
-                          <input type="number" class="form-control" id="bookPages" placeholder="Enter total number of pages" required>
+                          <label for="pages" class="form-label">Pages</label>
+                          <input type="number" class="form-control" id="pages" placeholder="Enter total number of pages" required>
                       </div>
                       <div class="mb-3">
-                          <label for="bookProgress" class="form-label">Progress</label>
-                          <input type="number" class="form-control" id="bookProgress" placeholder="Enter your reading progress(in pages)" max="100" required>
+                          <label for="progress" class="form-label">Progress (in pages)</label>
+                          <input type="number" class="form-control" id="progress" placeholder="Enter your reading progress" min= required>
                       </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary primary-btn" id="saveBookBtn">Save Book</button>
+                    </div>
                   </form>
-              </div>
-              <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                  <button type="button" class="btn btn-primary primary-btn" id="saveBookBtn">Save Book</button>
               </div>
           </div>
       </div>
