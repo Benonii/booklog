@@ -28,10 +28,24 @@ document.addEventListener('DOMContentLoaded', function () {
                         <div>
                             <div class="d-flex justify-content-between align-items-center">
                                 <h5 class="card-title">${book.title}</h5>
-                                <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="align-self-center delete-btn mt-2 me-2" viewBox="0 0 16 16">
-                                  <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z"/>
-                                  <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z"/>
-                                </svg>
+                                <a 
+                                    tabindex="0" 
+                                    class="btn btn-lg" 
+                                    role="button" 
+                                    data-bs-toggle="modal" 
+                                    data-bs-target="#deleteModal"
+                                    data-id=${book.id}>
+                                    <svg 
+                                        xmlns="http://www.w3.org/2000/svg" 
+                                        width="25" 
+                                        height="25" 
+                                        fill="currentColor" 
+                                        class="align-self-center delete-btn" 
+                                        viewBox="0 0 16 16">
+                                        <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z"/>
+                                        <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z"/>
+                                    </svg>
+                                </a>
                             </div>
                             <p class="card-text"><strong>Genre:</strong> ${book.genre}</p>
                             <p class="card-text">Pages: ${book.pages}</p>
@@ -134,7 +148,8 @@ document.addEventListener('DOMContentLoaded', function () {
     
             await updateBook(book_id, bookEdit);
         });
-    })
+    });
+
     async function getBookByID(bookID: number): Promise<Book> {
         const response = await fetch(`http://localhost:3000/api/book/${bookID}`, {
             method: 'GET',
@@ -185,6 +200,24 @@ document.addEventListener('DOMContentLoaded', function () {
         alert("Book updated successfully");
     }
 
+    async function deleteBook(bookID: string): Promise<void> {
+        const book_id = Number(bookID);
+        const response = await fetch(`http://localhost:3000/api/book/${book_id}`, {
+            method: 'DELETE',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+            }
+        })
+
+        const responseJSON = await response.json();
+        if (!response.ok) {
+            throw new Error(responseJSON.message || "An error occured!");
+        }
+
+        console.log("Book updated successfully!");
+        alert("Book deleted successfully!");
+    }
+
     // Listen for a book being updated
     document.addEventListener('click', function (e: any) {
         e.preventDefault()
@@ -194,10 +227,32 @@ document.addEventListener('DOMContentLoaded', function () {
             populateEditModal(bookID);
         }
     })
-});
-   
 
-let currentBookId: number | null = null;
+    // Listen for a book being deleted
+    document.getElementById('deleteModal')?.addEventListener('show.bs.modal', function(e) {
+        console.log("I know this bitch open");
+        const button = (e as any).relatedTarget as HTMLElement;
+        const bookID = button.getAttribute('data-id');
+
+        const confirmDeleteButton = document.getElementById('confirmDelete');
+        console.log("The button is found!", confirmDeleteButton)
+        confirmDeleteButton!.addEventListener('click', async function () {
+            if (bookID!) {
+                // Send a request to delete the book
+                await deleteBook(bookID!);
+            } else {
+                console.error('No book ID selected!');
+            }
+        });
+    })
+    document.addEventListener('click', function (e: any) {
+        e.preventDefault()
+        if (e.target?.classList.contains('confirm-delete')) {
+            const bookID = e?.target.getAttribute('data-book-id')
+            console.log("Book ID:", bookID);
+        }
+    })
+});
 
 // Fetch books from the API
 async function fetchBooks(): Promise<Book[]> {
