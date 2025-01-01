@@ -6,11 +6,10 @@ type User = {
 };
 
 interface MeApiResponse {
-    user: User;
+    data: User;
 };
 
 const token: string | null = localStorage.getItem('jwtToken');
-
 
 function redirectToLogin(): void {
     window.location.href = 'login.html'
@@ -35,8 +34,8 @@ function verifyToken(): void {
         }
         return response.json();
     }).then((data: MeApiResponse | undefined) => {
-        if (data && data.user) {
-            localStorage.setItem('userData', JSON.stringify(data.user));
+        if (data && data.data) {
+            localStorage.setItem('userData', JSON.stringify(data.data));
         }
     }).catch((error: Error) => {
         console.log("Error verifying token:", error);
@@ -44,4 +43,26 @@ function verifyToken(): void {
     });
 };
 
-document.addEventListener('DOMContentLoaded', verifyToken);
+document.addEventListener('DOMContentLoaded', function() {
+    try {
+        verifyToken();
+    } catch {
+        redirectToLogin();
+    }
+
+    const user: Partial<User> | null = localStorage.getItem('userData') ? JSON.parse(localStorage.getItem('userData') || '') : null;
+    console.log("User:", user)
+    const userDataCtr = document.getElementById('userDataCtr');
+    const userEmail = document.createElement('p')
+    userEmail.textContent = `${user?.email}`;
+    userEmail.style.marginBottom = '0px'
+    const userUsername = document.createElement('p')
+    userUsername.className = 'text-secondary';
+    userUsername.textContent = `${user?.username}`;
+    userUsername.style.marginBottom = '0px'
+
+
+
+    userDataCtr?.appendChild(userEmail);
+    userDataCtr?.appendChild(userUsername);
+});
