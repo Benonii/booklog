@@ -1,0 +1,135 @@
+"use strict";
+var __runInitializers = (this && this.__runInitializers) || function (thisArg, initializers, value) {
+    var useValue = arguments.length > 2;
+    for (var i = 0; i < initializers.length; i++) {
+        value = useValue ? initializers[i].call(thisArg, value) : initializers[i].call(thisArg);
+    }
+    return useValue ? value : void 0;
+};
+var __esDecorate = (this && this.__esDecorate) || function (ctor, descriptorIn, decorators, contextIn, initializers, extraInitializers) {
+    function accept(f) { if (f !== void 0 && typeof f !== "function") throw new TypeError("Function expected"); return f; }
+    var kind = contextIn.kind, key = kind === "getter" ? "get" : kind === "setter" ? "set" : "value";
+    var target = !descriptorIn && ctor ? contextIn["static"] ? ctor : ctor.prototype : null;
+    var descriptor = descriptorIn || (target ? Object.getOwnPropertyDescriptor(target, contextIn.name) : {});
+    var _, done = false;
+    for (var i = decorators.length - 1; i >= 0; i--) {
+        var context = {};
+        for (var p in contextIn) context[p] = p === "access" ? {} : contextIn[p];
+        for (var p in contextIn.access) context.access[p] = contextIn.access[p];
+        context.addInitializer = function (f) { if (done) throw new TypeError("Cannot add initializers after decoration has completed"); extraInitializers.push(accept(f || null)); };
+        var result = (0, decorators[i])(kind === "accessor" ? { get: descriptor.get, set: descriptor.set } : descriptor[key], context);
+        if (kind === "accessor") {
+            if (result === void 0) continue;
+            if (result === null || typeof result !== "object") throw new TypeError("Object expected");
+            if (_ = accept(result.get)) descriptor.get = _;
+            if (_ = accept(result.set)) descriptor.set = _;
+            if (_ = accept(result.init)) initializers.unshift(_);
+        }
+        else if (_ = accept(result)) {
+            if (kind === "field") initializers.unshift(_);
+            else descriptor[key] = _;
+        }
+    }
+    if (target) Object.defineProperty(target, contextIn.name, descriptor);
+    done = true;
+};
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __setFunctionName = (this && this.__setFunctionName) || function (f, name, prefix) {
+    if (typeof name === "symbol") name = name.description ? "[".concat(name.description, "]") : "";
+    return Object.defineProperty(f, "name", { configurable: true, value: prefix ? "".concat(prefix, " ", name) : name });
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.BookController = void 0;
+const common_1 = require("@nestjs/common");
+const auth_guard_1 = require("../auth/auth.guard");
+let BookController = (() => {
+    let _classDecorators = [(0, common_1.Controller)('book')];
+    let _classDescriptor;
+    let _classExtraInitializers = [];
+    let _classThis;
+    let _instanceExtraInitializers = [];
+    let _createBook_decorators;
+    let _getBooksByUser_decorators;
+    let _getLastReadBook_decorators;
+    let _getBookByID_decorators;
+    let _updateBook_decorators;
+    let _deleteBook_decorators;
+    var BookController = _classThis = class {
+        constructor(bookService) {
+            this.bookService = (__runInitializers(this, _instanceExtraInitializers), bookService);
+        }
+        createBook(req, createBookDto) {
+            return __awaiter(this, void 0, void 0, function* () {
+                const user_id = req.user.id;
+                console.log("Type of user id:", typeof user_id);
+                const result = yield this.bookService.createBook(user_id, createBookDto);
+                return result;
+            });
+        }
+        getBooksByUser(req) {
+            return __awaiter(this, void 0, void 0, function* () {
+                const user_id = req.user.id;
+                const result = yield this.bookService.getBooks(user_id);
+                return result;
+            });
+        }
+        getLastReadBook(req) {
+            return __awaiter(this, void 0, void 0, function* () {
+                const user_id = req.user.id;
+                const result = yield this.bookService.getLastReadBook(user_id);
+                return result;
+            });
+        }
+        getBookByID(req) {
+            return __awaiter(this, void 0, void 0, function* () {
+                const book_id = req.params['book_id'];
+                const result = yield this.bookService.getBookByID(book_id);
+                return result;
+            });
+        }
+        updateBook(req, updateBookDto) {
+            return __awaiter(this, void 0, void 0, function* () {
+                const book_id = req.params['book_id'];
+                const result = yield this.bookService.updateBook(book_id, updateBookDto);
+                return result;
+            });
+        }
+        deleteBook(req) {
+            return __awaiter(this, void 0, void 0, function* () {
+                const book_id = req.params['book_id'];
+                const result = yield this.bookService.deleteBook(book_id);
+                return result;
+            });
+        }
+    };
+    __setFunctionName(_classThis, "BookController");
+    (() => {
+        const _metadata = typeof Symbol === "function" && Symbol.metadata ? Object.create(null) : void 0;
+        _createBook_decorators = [(0, common_1.Post)(), (0, common_1.UseGuards)(auth_guard_1.AuthGuard)];
+        _getBooksByUser_decorators = [(0, common_1.Get)(), (0, common_1.UseGuards)(auth_guard_1.AuthGuard)];
+        _getLastReadBook_decorators = [(0, common_1.Get)('/last-read'), (0, common_1.UseGuards)(auth_guard_1.AuthGuard)];
+        _getBookByID_decorators = [(0, common_1.Get)(':book_id'), (0, common_1.UseGuards)(auth_guard_1.AuthGuard)];
+        _updateBook_decorators = [(0, common_1.Patch)(':book_id'), (0, common_1.UseGuards)(auth_guard_1.AuthGuard)];
+        _deleteBook_decorators = [(0, common_1.Delete)(':book_id'), (0, common_1.UseGuards)(auth_guard_1.AuthGuard)];
+        __esDecorate(_classThis, null, _createBook_decorators, { kind: "method", name: "createBook", static: false, private: false, access: { has: obj => "createBook" in obj, get: obj => obj.createBook }, metadata: _metadata }, null, _instanceExtraInitializers);
+        __esDecorate(_classThis, null, _getBooksByUser_decorators, { kind: "method", name: "getBooksByUser", static: false, private: false, access: { has: obj => "getBooksByUser" in obj, get: obj => obj.getBooksByUser }, metadata: _metadata }, null, _instanceExtraInitializers);
+        __esDecorate(_classThis, null, _getLastReadBook_decorators, { kind: "method", name: "getLastReadBook", static: false, private: false, access: { has: obj => "getLastReadBook" in obj, get: obj => obj.getLastReadBook }, metadata: _metadata }, null, _instanceExtraInitializers);
+        __esDecorate(_classThis, null, _getBookByID_decorators, { kind: "method", name: "getBookByID", static: false, private: false, access: { has: obj => "getBookByID" in obj, get: obj => obj.getBookByID }, metadata: _metadata }, null, _instanceExtraInitializers);
+        __esDecorate(_classThis, null, _updateBook_decorators, { kind: "method", name: "updateBook", static: false, private: false, access: { has: obj => "updateBook" in obj, get: obj => obj.updateBook }, metadata: _metadata }, null, _instanceExtraInitializers);
+        __esDecorate(_classThis, null, _deleteBook_decorators, { kind: "method", name: "deleteBook", static: false, private: false, access: { has: obj => "deleteBook" in obj, get: obj => obj.deleteBook }, metadata: _metadata }, null, _instanceExtraInitializers);
+        __esDecorate(null, _classDescriptor = { value: _classThis }, _classDecorators, { kind: "class", name: _classThis.name, metadata: _metadata }, null, _classExtraInitializers);
+        BookController = _classThis = _classDescriptor.value;
+        if (_metadata) Object.defineProperty(_classThis, Symbol.metadata, { enumerable: true, configurable: true, writable: true, value: _metadata });
+        __runInitializers(_classThis, _classExtraInitializers);
+    })();
+    return BookController = _classThis;
+})();
+exports.BookController = BookController;
